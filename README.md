@@ -47,3 +47,26 @@ The tests use saved sample pages, so they run offline.
 - Designing for testability: the network call is injected, so tests never
   touch the internet
 - Building a CLI with subcommands (`add`, `check`, `history`)
+
+## Case study
+
+**The problem.** Prices change constantly, and nobody wants to re-check a
+product page every day to catch a drop.
+
+**Technologies.** Pure Python 3. Prices are pulled from the page HTML with
+regular expressions that understand common formats (£, $, €), every check is
+recorded with a UTC timestamp in a JSON history file, and the network call
+is injected so the tests never touch the internet.
+
+**The result.** `check` reports the current price, the lowest price ever
+seen and your target for every tracked product, and flags `PRICE ALERT` the
+moment a price falls to your target or below. `history` shows the full price
+timeline for any product.
+
+**Limits (being upfront).** It checks when you tell it to - run `check`
+yourself or schedule it with cron or Task Scheduler (hourly or daily is
+plenty, and kinder to the shop). There is no built-in email or phone
+notification yet; alerts print to the terminal, and wiring them to an email
+or messaging service is the natural next step. It reads prices from the page
+HTML, so a site that hides prices behind JavaScript needs a different
+extractor.
